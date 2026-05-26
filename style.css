@@ -1,0 +1,398 @@
+/* -------------------------------------------------------------
+ * Custom Design System: 散歩の足跡 - LBS Logger Prototype
+ * ------------------------------------------------------------- */
+
+/* CSS Variables */
+:root {
+    --bg-primary: #0b0f19;
+    --bg-secondary: #141c2f;
+    --card-bg: rgba(20, 30, 55, 0.6);
+    --card-border: rgba(255, 255, 255, 0.08);
+    
+    --text-primary: #ffffff;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+
+    /* Green Palette */
+    --color-primary: #10b981; /* Emerald Green */
+    --color-primary-hover: #059669;
+    --color-primary-glow: rgba(16, 185, 129, 0.4);
+
+    /* Error Palette */
+    --color-error: #ef4444;
+    --color-error-bg: rgba(239, 68, 68, 0.1);
+    --color-error-border: rgba(239, 68, 68, 0.3);
+
+    /* Fonts */
+    --font-sans: 'Outfit', 'Noto Sans JP', sans-serif;
+}
+
+/* Reset & Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-sans);
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow-x: hidden;
+}
+
+/* Dynamic Animated Background */
+.app-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background: radial-gradient(circle at 10% 20%, rgba(16, 185, 129, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(20, 30, 55, 0.8) 0%, var(--bg-primary) 70%);
+}
+
+/* Main Container */
+.app-container {
+    width: 100%;
+    max-width: 520px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+/* Header Styling */
+.app-header {
+    text-align: center;
+}
+
+.app-title {
+    font-size: 2.2rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    background: linear-gradient(135deg, #ffffff 60%, var(--color-primary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.app-title .icon {
+    -webkit-text-fill-color: initial;
+}
+
+.app-subtitle {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+/* Card Styling with Glassmorphism */
+.card.glass {
+    background: var(--card-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--card-border);
+    border-radius: 24px;
+    padding: 36px 28px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card.glass:hover {
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.5), 0 0 20px rgba(16, 185, 129, 0.05);
+}
+
+/* Button Container & Button Styling */
+.button-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.btn {
+    font-family: var(--font-sans);
+    font-size: 1.15rem;
+    font-weight: 700;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    outline: none;
+}
+
+/* Primary Button (Emerald Green, Height 60px) */
+.btn-primary {
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-hover) 100%);
+    color: #ffffff;
+    height: 60px;
+    width: 100%;
+    max-width: 320px;
+    box-shadow: 0 8px 24px var(--color-primary-glow), inset 0 2px 4px rgba(255, 255, 255, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -50%;
+    width: 200%;
+    height: 100%;
+    background: linear-gradient(
+        to right,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.3) 50%,
+        rgba(255, 255, 255, 0) 100%
+    );
+    transform: skewX(-25deg);
+    transition: 0.75s;
+    opacity: 0;
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 28px rgba(16, 185, 129, 0.6), inset 0 2px 4px rgba(255, 255, 255, 0.3);
+}
+
+.btn-primary:hover::after {
+    left: 125%;
+    opacity: 1;
+}
+
+.btn-primary:active {
+    transform: translateY(1px);
+    box-shadow: 0 4px 12px var(--color-primary-glow);
+}
+
+.btn-icon {
+    font-size: 1.3rem;
+}
+
+/* Status Indicator / Loader */
+.status-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    animation: fadeIn 0.4s ease forwards;
+}
+
+.loader {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(16, 185, 129, 0.1);
+    border-radius: 50%;
+    border-top-color: var(--color-primary);
+    animation: spin 1s ease-in-out infinite;
+}
+
+.status-text {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+/* Results Section */
+.result-container {
+    animation: fadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.result-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+    text-align: center;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.result-title::before,
+.result-title::after {
+    content: '';
+    height: 1px;
+    flex-grow: 1;
+    background: linear-gradient(to right, transparent, var(--card-border), transparent);
+}
+
+.result-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+
+.result-item {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    transition: background 0.3s ease;
+}
+
+.result-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.result-item.full-width {
+    grid-column: span 2;
+}
+
+.result-label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.result-value {
+    font-size: 1.45rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    font-feature-settings: "tnum";
+}
+
+/* Error Alerts (Gentle, Harmonious) */
+.error-container {
+    animation: fadeIn 0.4s ease forwards;
+}
+
+.error-card {
+    background-color: var(--color-error-bg);
+    border: 1px solid var(--color-error-border);
+    border-radius: 16px;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.error-icon {
+    font-size: 1.4rem;
+}
+
+.error-message {
+    font-size: 0.95rem;
+    color: #fca5a5;
+    font-weight: 500;
+    line-height: 1.5;
+}
+
+/* Footer Styling */
+.app-footer {
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+/* Utility Classes */
+.hidden {
+    display: none !important;
+}
+
+/* Animations */
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Map Styling */
+.map-container {
+    width: 100%;
+    border-radius: 18px;
+    overflow: hidden;
+    border: 1px solid var(--card-border);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+#map {
+    width: 100%;
+    height: 400px;
+    z-index: 5;
+    background-color: var(--bg-secondary);
+}
+
+/* Adjust leaflet controls for dark theme integration */
+.leaflet-bar {
+    border: 1px solid var(--card-border) !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
+}
+
+.leaflet-bar a {
+    background-color: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+    border-bottom: 1px solid var(--card-border) !important;
+}
+
+.leaflet-bar a:hover {
+    background-color: var(--card-bg) !important;
+}
+
+.leaflet-container {
+    font-family: var(--font-sans) !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+    .app-container {
+        padding: 16px;
+    }
+    
+    .card.glass {
+        padding: 28px 20px;
+    }
+
+    .result-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .result-item.full-width {
+        grid-column: span 1;
+    }
+
+    .result-value {
+        font-size: 1.25rem;
+    }
+
+    .app-title {
+        font-size: 1.8rem;
+    }
+}

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="散歩の記録を残すための位置情報取得プロトタイプアプリ。現在の緯度、経度、精度をワンタップで取得・表示します。">
+    <title>散歩の足跡 - 位置情報取得アプリ</title>
+    <!-- Google Fonts: Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Leaflet.js CSS & JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- Main Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- PWA Settings -->
+    <link rel="manifest" href="manifest.json" />
+    <meta name="theme-color" content="#0b0f19" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="散歩の足跡">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+    <!-- Application Logic -->
+    <script src="app.js" defer></script>
+    
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('Service Worker registered successfully:', reg.scope))
+                    .catch(err => console.error('Service Worker registration failed:', err));
+            });
+        }
+    </script>
+</head>
+<body>
+    <div class="app-background"></div>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <h1 class="app-title">
+                <span class="icon">🚶‍♂️</span> 散歩の足跡
+            </h1>
+            <p class="app-subtitle">LBS Logger Prototype</p>
+        </header>
+
+        <!-- Main Content -->
+        <main class="app-main">
+            <div class="card glass">
+                <!-- 地図表示領域（上部に配置、初期状態は非表示） -->
+                <div id="map-container" class="map-container hidden">
+                    <div id="map"></div>
+                </div>
+
+                <div class="button-wrapper">
+                    <!-- 画面中央に配置される現在地取得ボタン -->
+                    <button id="get-location-btn" class="btn btn-primary" aria-label="現在地を取得する">
+                        <span class="btn-icon">📍</span>
+                        <span class="btn-text">現在地を取得</span>
+                    </button>
+                </div>
+
+                <!-- ステータスおよび結果表示領域 -->
+                <div id="status-container" class="status-container hidden">
+                    <div class="loader"></div>
+                    <p id="status-text" class="status-text">位置情報を取得中...</p>
+                </div>
+
+                <div id="result-container" class="result-container hidden">
+                    <h2 class="result-title">取得した位置情報</h2>
+                    <div class="result-grid">
+                        <div class="result-item">
+                            <span class="result-label">緯度 (Latitude)</span>
+                            <span id="latitude-val" class="result-value">--</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">経度 (Longitude)</span>
+                            <span id="longitude-val" class="result-value">--</span>
+                        </div>
+                        <div class="result-item full-width">
+                            <span class="result-label">精度 (Accuracy)</span>
+                            <span id="accuracy-val" class="result-value">--</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- エラー表示領域（優しいアラート） -->
+                <div id="error-container" class="error-container hidden">
+                    <div class="error-card">
+                        <span class="error-icon">⚠️</span>
+                        <p id="error-message" class="error-message"></p>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <p>&copy; 2026 散歩の足跡. All Rights Reserved.</p>
+        </footer>
+    </div>
+</body>
+</html>
